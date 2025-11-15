@@ -16,12 +16,12 @@ export default function Home() {
               ease. The ultimate platform for football enthusiasts.
             </p>
             <div className="flex gap-4 justify-center">
-              <Link href="/register">
+              <Link href="/sign-up">
                 <Button size="lg" variant="secondary" className="text-lg">
                   Get Started
                 </Button>
               </Link>
-              <Link href="/login">
+              <Link href="/sign-in">
                 <Button
                   size="lg"
                   variant="outline"
