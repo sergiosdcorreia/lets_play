@@ -1,13 +1,30 @@
 "use client";
 
-import { useAuthStore } from "@/store/authStore";
+import { UserMenu } from "@/components/UserMenu";
+import { Bell } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Header = () => {
-  const { user } = useAuthStore();
   return (
-    <header className="header bg-slate-600 py-5 px-10 rounded-3xl">
-      <div className="container">{user?.name}</div>
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div className="flex items-center justify-between px-8 py-4">
+        <div>
+          <h2 className="text-lg font-semibold text-gray-800">Dashboard</h2>
+        </div>
+
+        <div className="flex items-center gap-4">
+          {/* Notification Button */}
+          <Button variant="ghost" size="icon" className="relative">
+            <Bell className="h-5 w-5 text-gray-600" />
+            <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
+          </Button>
+
+          {/* User Menu Dropdown */}
+          <UserMenu />
+        </div>
+      </div>
     </header>
   );
 };
+
 export default Header;

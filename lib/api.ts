@@ -2,23 +2,55 @@ import axios from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
-// Create axios instance
 export const api = axios.create({
   baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
   },
 });
+api.interceptors.request.use(
+  (config) => {
+    if (typeof window !== "undefined") {
+      const storedData = localStorage.getItem("auth-storage");
 
-// Add token to requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+      if (storedData) {
+        try {
+          const { state } = JSON.parse(storedData);
+          const token = state?.token;
+
+          if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+          }
+        } catch (error) {
+          console.error("Failed to parse auth token:", error);
+        }
+      }
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expirado ou inválido
+      if (typeof window !== "undefined") {
+        // Limpa o auth storage
+        localStorage.removeItem("auth-storage");
+        // Redireciona para login
+        window.location.href = "/sign-in";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+// ==================== AUTH API ====================
 export const authApi = {
   register: (data: { email: string; password: string; name: string }) =>
     api.post<AuthResponse>("/auth/register", data),
@@ -27,7 +59,7 @@ export const authApi = {
   getCurrentUser: () => api.get<{ user: User }>("/users/me"),
 };
 
-// Teams API
+// ==================== TEAMS API ====================
 export const teamsApi = {
   getAll: () => api.get<{ teams: Team[] }>("/teams"),
   getById: (id: string) => api.get<{ team: Team }>(`/teams/${id}`),
@@ -44,7 +76,7 @@ export const teamsApi = {
   leave: (id: string) => api.post<{ message: string }>(`/teams/${id}/leave`),
 };
 
-// Tournaments API
+// ==================== TOURNAMENTS API ====================
 export const tournamentsApi = {
   getAll: (params?: { status?: string }) =>
     api.get<{ tournaments: Tournament[] }>("/tournaments", { params }),
@@ -86,7 +118,7 @@ export const tournamentsApi = {
     api.post(`/tournaments/${id}/generate-fixtures`, data),
 };
 
-// Matches API
+// ==================== MATCHES API ====================
 export const matchesApi = {
   getAll: (params?: { status?: string; upcoming?: boolean }) =>
     api.get<{ matches: Match[] }>("/matches", { params }),
@@ -103,7 +135,7 @@ export const matchesApi = {
     api.post(`/matches/${id}/rsvp`, { status }),
 };
 
-// Statistics API
+// ==================== STATISTICS API ====================
 export const statsApi = {
   getLeaderboard: (type: "goal" | "assist", limit?: number) =>
     api.get<{ type: string; leaderboard: LeaderboardEntry[] }>(
@@ -119,7 +151,7 @@ export const statsApi = {
     api.post(`/statistics/match/${matchId}/event`, data),
 };
 
-// Venues API
+// ==================== VENUES API ====================
 export const venuesApi = {
   getAll: () => api.get<{ venues: Venue[] }>("/venues"),
   getById: (id: string) => api.get<{ venue: Venue }>(`/venues/${id}`),

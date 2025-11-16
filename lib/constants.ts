@@ -1,11 +1,4 @@
-import {
-  Home,
-  Users,
-  Trophy,
-  Calendar,
-  TrendingUp,
-  LogOut,
-} from "lucide-react";
+import { Home, Users, Trophy, Calendar, TrendingUp, User } from "lucide-react";
 
 export const NAV_ITEMS = [
   {

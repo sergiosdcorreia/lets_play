@@ -55,12 +55,8 @@ const SignUp: () => React.JSX.Element = () => {
     try {
       const response = await authApi.register({ email, password, name });
 
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-
       setAuth(response.data.user, response.data.token);
-
-      router.push("/dashboard");
+      router.push("/sign-in");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to register");
     } finally {
@@ -157,7 +153,7 @@ const SignUp: () => React.JSX.Element = () => {
             <p className="text-sm text-center text-muted-foreground">
               Already have an account?{" "}
               <Link
-                href="/login"
+                href="/sign-in"
                 className="text-primary hover:underline font-semibold"
               >
                 Login here

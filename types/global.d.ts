@@ -28,6 +28,7 @@ declare global {
     name: string;
     position?: string;
     skillLevel?: number;
+    avatar?: string;
     createdAt?: string;
     updatedAt?: string;
   }

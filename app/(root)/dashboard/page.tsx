@@ -1,9 +1,8 @@
 "use client";
 
-"use client";
-
 import { useAuthStore } from "@/store/authStore";
 import { useEffect, useState } from "react";
+import { useHydration } from "@/hooks/useHydration";
 import { teamsApi, tournamentsApi, matchesApi } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,12 +19,16 @@ import {
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
+  const hydrated = useHydration();
+
   const [teams, setTeams] = useState<Team[]>([]);
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!hydrated) return;
+
     const fetchData = async () => {
       try {
         const [teamsRes, tournamentsRes, matchesRes] = await Promise.all([
@@ -45,9 +48,9 @@ export default function DashboardPage() {
     };
 
     fetchData();
-  }, []);
+  }, [hydrated]);
 
-  if (loading) {
+  if (!hydrated || loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
