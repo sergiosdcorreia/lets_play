@@ -1,3 +1,4 @@
+// components/teams/EditTeamDialog.tsx
 "use client";
 
 import { useState } from "react";
@@ -15,20 +16,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Loader2 } from "lucide-react";
+import { Pencil, Loader2 } from "lucide-react";
 import { teamsApi } from "@/lib/api";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export function CreateTeamDialog() {
+interface EditTeamDialogProps {
+  team: Team;
+}
+
+export function EditTeamDialog({ team }: EditTeamDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    primaryColor: "#3b82f6", // Default blue
+    name: team.name,
+    description: team.description || "",
+    primaryColor: team.primaryColor || "#3b82f6",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,22 +48,11 @@ export function CreateTeamDialog() {
     setLoading(true);
 
     try {
-      await teamsApi.create(formData);
-
-      // Reset form
-      setFormData({
-        name: "",
-        description: "",
-        primaryColor: "#3b82f6",
-      });
-
-      // Close dialog
+      await teamsApi.update(team.id, formData);
       setOpen(false);
-
-      // Refresh page to show new team
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create team");
+      setError(err instanceof Error ? err.message : "Failed to update team");
     } finally {
       setLoading(false);
     }
@@ -67,18 +61,16 @@ export function CreateTeamDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Create Team
+        <Button variant="outline" size="sm">
+          <Pencil className="mr-2 h-4 w-4" />
+          Edit Team
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Create New Team</DialogTitle>
-            <DialogDescription>
-              Create a new team to organize matches and track statistics.
-            </DialogDescription>
+            <DialogTitle>Edit Team</DialogTitle>
+            <DialogDescription>Update your team information</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
@@ -88,14 +80,12 @@ export function CreateTeamDialog() {
               </Alert>
             )}
 
-            {/* Team Name */}
             <div className="space-y-2">
               <Label htmlFor="name">
                 Team Name <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="name"
-                placeholder="e.g., Thunder FC"
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -105,12 +95,10 @@ export function CreateTeamDialog() {
               />
             </div>
 
-            {/* Description */}
             <div className="space-y-2">
-              <Label htmlFor="description">Description (Optional)</Label>
+              <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
-                placeholder="Tell us about your team..."
                 value={formData.description}
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
@@ -120,7 +108,6 @@ export function CreateTeamDialog() {
               />
             </div>
 
-            {/* Team Color */}
             <div className="space-y-2">
               <Label htmlFor="color">Team Color</Label>
               <div className="flex items-center gap-4">
@@ -134,9 +121,6 @@ export function CreateTeamDialog() {
                   disabled={loading}
                   className="w-20 h-10 cursor-pointer"
                 />
-                <span className="text-sm text-gray-500">
-                  Choose your team&apos;s primary color
-                </span>
               </div>
             </div>
           </div>
@@ -154,10 +138,10 @@ export function CreateTeamDialog() {
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating...
+                  Saving...
                 </>
               ) : (
-                "Create Team"
+                "Save Changes"
               )}
             </Button>
           </DialogFooter>

@@ -1,4 +1,3 @@
-// components/teams/TeamCard.tsx
 "use client";
 
 import Link from "next/link";
@@ -13,7 +12,7 @@ export function TeamCard({ team }: TeamCardProps) {
   const memberCount = team.members?.length || 0;
 
   return (
-    <Link href={`/teams/${team.id}`}>
+    <Link href={`/dashboard/teams/${team.id}`}>
       <Card className="hover:shadow-lg transition-shadow cursor-pointer">
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
