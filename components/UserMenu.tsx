@@ -60,8 +60,8 @@ export function UserMenu() {
 
           {/* User Info */}
           <div className="text-left hidden md:block">
-            <p className="text-sm font-medium text-gray-700">{user?.name}</p>
-            <p className="text-xs text-gray-500">{user?.email}</p>
+            <p className="text-sm font-medium text-gray-400">{user?.name}</p>
+            <p className="text-xs text-gray-200">{user?.email}</p>
           </div>
         </div>
       </DropdownMenuTrigger>

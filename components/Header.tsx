@@ -6,16 +6,16 @@ import { Button } from "@/components/ui/button";
 
 const Header = () => {
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <header className="sticky top-0 z-10">
       <div className="flex items-center justify-between px-8 py-4">
         <div>
-          <h2 className="text-lg font-semibold text-gray-800">Dashboard</h2>
+          <h2 className="text-lg font-semibold text-gray-400">Dashboard</h2>
         </div>
 
         <div className="flex items-center gap-4">
           {/* Notification Button */}
           <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-5 w-5 text-gray-600" />
+            <Bell className="h-5 w-5 text-gray-300" />
             <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
           </Button>
 
