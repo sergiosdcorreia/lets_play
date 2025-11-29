@@ -59,6 +59,15 @@ export const authApi = {
   getCurrentUser: () => api.get<{ user: User }>("/users/me"),
 };
 
+// ==================== USERS API ====================
+export const usersApi = {
+  search: (query: string) =>
+    api.get<{ users: User[] }>("/users/search", {
+      params: { q: query },
+    }),
+  getById: (id: string) => api.get<{ user: User }>(`/users/${id}`),
+};
+
 // ==================== TEAMS API ====================
 export const teamsApi = {
   getAll: () => api.get<{ teams: Team[] }>("/teams"),
@@ -71,6 +80,8 @@ export const teamsApi = {
   delete: (id: string) => api.delete<{ message: string }>(`/teams/${id}`),
   invite: (id: string, userId: string, role: string) =>
     api.post(`/teams/${id}/invite`, { userId, role }),
+  inviteByEmail: (teamId: string, email: string, role: string) =>
+    api.post(`/teams/${teamId}/invite`, { email, role }),
   rsvp: (id: string, status: "active" | "declined") =>
     api.post(`/teams/${id}/rsvp`, { status }),
   leave: (id: string) => api.post<{ message: string }>(`/teams/${id}/leave`),
@@ -157,4 +168,12 @@ export const venuesApi = {
   getById: (id: string) => api.get<{ venue: Venue }>(`/venues/${id}`),
   create: (data: CreateVenueInput) =>
     api.post<{ message: string; venue: Venue }>("/venues", data),
+};
+
+// ==================== INVITES API ====================
+export const invitesApi = {
+  getMyInvites: () => api.get("/invites/my"),
+  getInviteByToken: (token: string) => api.get(`/invites/${token}`),
+  acceptInvite: (token: string) => api.post(`/invites/${token}/accept`),
+  declineInvite: (token: string) => api.post(`/invites/${token}/decline`),
 };

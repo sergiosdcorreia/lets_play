@@ -20,7 +20,7 @@ const Layout: ({ children }: { children: ReactNode }) => React.JSX.Element = ({
           />
         </Link>
 
-        <div className="pb-6 lg:pb-8 flex-1">{children}</div>
+        <div>{children}</div>
       </section>
     </main>
   );

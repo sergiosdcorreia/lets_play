@@ -13,6 +13,7 @@ import { EditTeamDialog } from "@/components/teams/EditTeamDialog";
 import { DeleteTeamDialog } from "@/components/teams/DeleteTeamDialog";
 import { LeaveTeamDialog } from "@/components/teams/LeaveTeamDialog";
 import { TeamMembersList } from "@/components/teams/TeamMembersList";
+import { InviteMemberDialog } from "@/components/teams/InviteMemberDialog";
 import { ArrowLeft, Users, Calendar, Trophy, Target } from "lucide-react";
 import Link from "next/link";
 
@@ -191,7 +192,9 @@ export default function TeamDetailsPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Team Members ({memberCount})</CardTitle>
-                {isManager && <Button size="sm">Invite Member</Button>}
+                {isManager && (
+                  <InviteMemberDialog teamId={team.id} teamName={team.name} />
+                )}
               </div>
             </CardHeader>
             <CardContent>

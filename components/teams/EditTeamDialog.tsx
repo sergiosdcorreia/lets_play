@@ -1,4 +1,3 @@
-// components/teams/EditTeamDialog.tsx
 "use client";
 
 import { useState } from "react";
