@@ -9,19 +9,15 @@ const Layout: ({ children }: { children: ReactNode }) => React.JSX.Element = ({
 }) => {
   return (
     <main className="auth-layout">
-      <section className="auth-left-section">
-        <Link href="/" className="auth-logo">
-          <Image
-            src="/assets/logo.svg"
-            alt="LetsPlay logo"
-            width={140}
-            height={32}
-            className="h-8 w-auto"
-          />
-        </Link>
-
-        <div>{children}</div>
-      </section>
+      <Image
+        src="/assets/bg.jpg"
+        alt="Background"
+        fill
+        quality={100}
+        priority
+        className="object-cover -z-10 opacity-20"
+      />
+      <section>{children}</section>
     </main>
   );
 };

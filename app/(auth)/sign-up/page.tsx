@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useAuthStore } from "@/store/authStore";
 import { Loader2 } from "lucide-react";
 import { authApi } from "@/lib/api";
+import Image from "next/image";
 
 const SignUp: () => React.JSX.Element = () => {
   const router = useRouter();
@@ -64,15 +65,20 @@ const SignUp: () => React.JSX.Element = () => {
     }
   };
   return (
-    <div className="min-h-[calc(100dvh-32px)] flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-dvh flex items-center justify-center py-4 mx-2">
+      <Card className="w-full max-w-md glassmorphism-card backdrop-blur-sm">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
-            Create an account
+          <CardTitle>
+            <Link href="/" className="auth-logo flex justify-center p-6">
+              <Image
+                src="/assets/logo_big.svg"
+                alt="LetsPlay logo"
+                width={140}
+                height={32}
+                className="h-24 w-auto"
+              />
+            </Link>
           </CardTitle>
-          <CardDescription className="text-center">
-            Join Let&apos;s Play and start organizing matches
-          </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
