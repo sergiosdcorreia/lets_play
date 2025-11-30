@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { removeAuthCookie } from "@/lib/auth";
 
 interface User {
   id: string;
@@ -31,6 +32,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        removeAuthCookie();
         set({ user: null, token: null, isAuthenticated: false });
       },
 

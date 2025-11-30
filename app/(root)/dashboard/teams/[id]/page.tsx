@@ -58,7 +58,7 @@ export default function TeamDetailsPage() {
     return (
       <div className="space-y-4">
         <Button variant="ghost" asChild>
-          <Link href="/teams">
+          <Link href="/dashboard/teams">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Teams
           </Link>
@@ -77,7 +77,7 @@ export default function TeamDetailsPage() {
     <div className="space-y-6">
       {/* Back Button */}
       <Button variant="ghost" asChild>
-        <Link href="/teams">
+        <Link href="/dashboard/teams">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Teams
         </Link>
@@ -125,11 +125,9 @@ export default function TeamDetailsPage() {
         </div>
       </div>
 
-      <Separator />
-
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
+        <Card className="glassmorphism-card backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
               Members
@@ -141,7 +139,7 @@ export default function TeamDetailsPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="glassmorphism-card backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
               Matches Played
@@ -153,7 +151,7 @@ export default function TeamDetailsPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="glassmorphism-card backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
               Wins
@@ -165,7 +163,7 @@ export default function TeamDetailsPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="glassmorphism-card backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
               Goals
@@ -188,7 +186,7 @@ export default function TeamDetailsPage() {
 
         {/* Members Tab */}
         <TabsContent value="members" className="space-y-4">
-          <Card>
+          <Card className="glassmorphism-card backdrop-blur-sm">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Team Members ({memberCount})</CardTitle>
@@ -214,7 +212,7 @@ export default function TeamDetailsPage() {
 
         {/* Matches Tab */}
         <TabsContent value="matches">
-          <Card>
+          <Card className="glassmorphism-card backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Match History</CardTitle>
             </CardHeader>
@@ -229,7 +227,7 @@ export default function TeamDetailsPage() {
 
         {/* Stats Tab */}
         <TabsContent value="stats">
-          <Card>
+          <Card className="glassmorphism-card backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Team Statistics</CardTitle>
             </CardHeader>

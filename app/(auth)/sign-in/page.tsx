@@ -28,15 +28,19 @@ const SignIn: () => React.JSX.Element = () => {
     e.preventDefault();
     setError("");
     setLoading(true);
+    console.log("Attempting login with:", formData.email);
 
     try {
       const response = await authApi.login(formData);
+      console.log("Login response:", response);
       const { user, token } = response.data;
 
       setAuth(user, token);
       setAuthCookie(token);
+      console.log("Redirecting to dashboard...");
       router.push("/dashboard");
     } catch (err) {
+      console.error("Login error:", err);
       setError(
         err instanceof Error ? err.message : "Invalid email or password."
       );

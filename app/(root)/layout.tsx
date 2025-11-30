@@ -1,14 +1,22 @@
 import React, { ReactNode } from "react";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
+import Image from "next/image";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="min-h-screen">
-      {/* Layout em grid com sidebar fixa */}
-      <div className="flex">
-        {/* Sidebar - fixa à esquerda */}
-        <aside className="w-64 min-h-screen bg-slate-700 sticky top-0">
+      <Image
+        src="/assets/bg.jpg"
+        alt="Background"
+        fill
+        quality={100}
+        priority
+        className="object-cover -z-10 opacity-20"
+      />
+      <div className="flex min-h-screen">
+        {/* Sidebar */}
+        <aside className="w-72 flex flex-col">
           <Sidebar />
         </aside>
 

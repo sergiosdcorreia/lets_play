@@ -62,7 +62,7 @@ export default function DashboardPage() {
     <div className="space-y-8">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="glassmorphism-card">
+        <Card className="glassmorphism-card backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
               My Teams
@@ -77,7 +77,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="glassmorphism-card">
+        <Card className="glassmorphism-card backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
               Tournaments
@@ -90,7 +90,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="glassmorphism-card">
+        <Card className="glassmorphism-card backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
               Upcoming Matches
@@ -103,7 +103,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="glassmorphism-card">
+        <Card className="glassmorphism-card backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
               Skill Level
@@ -120,7 +120,7 @@ export default function DashboardPage() {
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* My Teams */}
-        <Card className="lg:col-span-2 glassmorphism-card">
+        <Card className="lg:col-span-2 glassmorphism-card backdrop-blur-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>My Teams</CardTitle>
@@ -176,7 +176,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Tournaments */}
-        <Card className="glassmorphism-card">
+        <Card className="glassmorphism-card backdrop-blur-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Tournaments</CardTitle>
@@ -227,7 +227,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Upcoming Matches */}
-      <Card className="glassmorphism-card">
+      <Card className="glassmorphism-card backdrop-blur-sm">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Upcoming Matches</CardTitle>
