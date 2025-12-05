@@ -2,27 +2,27 @@ import { Home, Users, Trophy, Calendar, TrendingUp, User } from "lucide-react";
 
 export const NAV_ITEMS = [
   {
-    href: "/",
+    href: "/dashboard",
     label: "Dashboard",
     icon: Home,
   },
   {
-    href: "/teams",
+    href: "/dashboard/teams",
     label: "Teams",
     icon: Users,
   },
   {
-    href: "/tournaments",
+    href: "/dashboard/tournaments",
     label: "Tournaments",
     icon: Trophy,
   },
   {
-    href: "/matches",
+    href: "/dashboard/matches",
     label: "Matches",
     icon: Calendar,
   },
   {
-    href: "/statistics",
+    href: "/dashboard/statistics",
     label: "Statistics",
     icon: TrendingUp,
   },

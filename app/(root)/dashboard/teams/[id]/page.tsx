@@ -14,6 +14,7 @@ import { DeleteTeamDialog } from "@/components/teams/DeleteTeamDialog";
 import { LeaveTeamDialog } from "@/components/teams/LeaveTeamDialog";
 import { TeamMembersList } from "@/components/teams/TeamMembersList";
 import { InviteMemberDialog } from "@/components/teams/InviteMemberDialog";
+import { MatchCard } from "@/components/matches/MatchCard";
 import { ArrowLeft, Users, Calendar, Trophy, Target } from "lucide-react";
 import Link from "next/link";
 
@@ -23,6 +24,8 @@ export default function TeamDetailsPage() {
   const hydrated = useHydration();
 
   const [team, setTeam] = useState<Team | null>(null);
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -31,19 +34,25 @@ export default function TeamDetailsPage() {
   useEffect(() => {
     if (!hydrated) return;
 
-    const fetchTeam = async () => {
+    const fetchData = async () => {
       try {
-        const response = await teamsApi.getById(teamId);
-        setTeam(response.data.team);
+        const [teamRes, matchesRes, statsRes] = await Promise.all([
+          teamsApi.getById(teamId),
+          teamsApi.getMatches(teamId),
+          teamsApi.getStats(teamId),
+        ]);
+        setTeam(teamRes.data.team);
+        setMatches(matchesRes.data.matches);
+        setStats(statsRes.data.stats);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to fetch team");
-        console.error("Failed to fetch team:", err);
+        setError(err instanceof Error ? err.message : "Failed to fetch team data");
+        console.error("Failed to fetch team data:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTeam();
+    fetchData();
   }, [hydrated, teamId]);
 
   if (!hydrated || loading) {
@@ -147,7 +156,7 @@ export default function TeamDetailsPage() {
             <Calendar className="h-4 w-4 text-gray-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">{stats?.matchesPlayed || 0}</div>
           </CardContent>
         </Card>
 
@@ -159,7 +168,7 @@ export default function TeamDetailsPage() {
             <Trophy className="h-4 w-4 text-gray-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">{stats?.wins || 0}</div>
           </CardContent>
         </Card>
 
@@ -171,7 +180,7 @@ export default function TeamDetailsPage() {
             <Target className="h-4 w-4 text-gray-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">{stats?.goalsFor || 0}</div>
           </CardContent>
         </Card>
       </div>
@@ -212,17 +221,24 @@ export default function TeamDetailsPage() {
 
         {/* Matches Tab */}
         <TabsContent value="matches">
-          <Card className="glassmorphism-card backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle>Match History</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12 text-gray-500">
-                <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                <p>No matches yet</p>
+          <div className="space-y-4">
+            {matches.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {matches.map((match) => (
+                  <MatchCard key={match.id} match={match} />
+                ))}
               </div>
-            </CardContent>
-          </Card>
+            ) : (
+              <Card className="glassmorphism-card backdrop-blur-sm">
+                <CardContent>
+                  <div className="text-center py-12 text-gray-500">
+                    <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                    <p>No matches yet</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </TabsContent>
 
         {/* Stats Tab */}
@@ -232,10 +248,45 @@ export default function TeamDetailsPage() {
               <CardTitle>Team Statistics</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12 text-gray-500">
-                <Trophy className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                <p>Statistics will appear here after matches</p>
-              </div>
+              {stats ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                  <div className="space-y-1">
+                    <p className="text-sm text-gray-500">Matches Played</p>
+                    <p className="text-2xl font-bold">{stats.matchesPlayed}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-gray-500">Wins</p>
+                    <p className="text-2xl font-bold text-green-600">{stats.wins}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-gray-500">Draws</p>
+                    <p className="text-2xl font-bold text-yellow-600">{stats.draws}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-gray-500">Losses</p>
+                    <p className="text-2xl font-bold text-red-600">{stats.losses}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-gray-500">Goals For</p>
+                    <p className="text-2xl font-bold text-blue-600">{stats.goalsFor}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-gray-500">Goals Against</p>
+                    <p className="text-2xl font-bold text-orange-600">{stats.goalsAgainst}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-gray-500">Goal Difference</p>
+                    <p className={`text-2xl font-bold ${stats.goalsFor - stats.goalsAgainst >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {stats.goalsFor - stats.goalsAgainst > 0 ? '+' : ''}{stats.goalsFor - stats.goalsAgainst}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-12 text-gray-500">
+                  <Trophy className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                  <p>No statistics available</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

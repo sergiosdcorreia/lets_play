@@ -66,6 +66,8 @@ export const usersApi = {
       params: { q: query },
     }),
   getById: (id: string) => api.get<{ user: User }>(`/users/${id}`),
+  updateProfile: (data: { name?: string; position?: string; skillLevel?: number }) =>
+    api.put<{ message: string; user: User }>("/users/profile", data),
 };
 
 // ==================== TEAMS API ====================
@@ -85,6 +87,8 @@ export const teamsApi = {
   rsvp: (id: string, status: "active" | "declined") =>
     api.post(`/teams/${id}/rsvp`, { status }),
   leave: (id: string) => api.post<{ message: string }>(`/teams/${id}/leave`),
+  getMatches: (id: string) => api.get<{ matches: Match[] }>(`/teams/${id}/matches`),
+  getStats: (id: string) => api.get<{ stats: any }>(`/teams/${id}/stats`),
 };
 
 // ==================== TOURNAMENTS API ====================
