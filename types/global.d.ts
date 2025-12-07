@@ -4,6 +4,11 @@ declare global {
     password: string;
   }
 
+  interface ChangePasswordInput {
+    currentPassword: string;
+    newPassword: string;
+  }
+
   type SignUpFormData = {
     fullName: string;
     email: string;

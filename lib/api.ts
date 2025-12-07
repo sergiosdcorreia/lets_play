@@ -68,6 +68,8 @@ export const usersApi = {
   getById: (id: string) => api.get<{ user: User }>(`/users/${id}`),
   updateProfile: (data: { name?: string; position?: string; skillLevel?: number }) =>
     api.put<{ message: string; user: User }>("/users/profile", data),
+  changePassword: (data: ChangePasswordInput) =>
+    api.put<{ message: string }>("/users/password", data),
 };
 
 // ==================== TEAMS API ====================
