@@ -1,13 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { tournamentsApi } from "@/lib/api";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { tournamentsApi, venuesApi } from "@/lib/api";
 import { format } from "date-fns";
-import { Loader2, Trophy } from "lucide-react";
+import { Loader2, Trophy, Calendar, MapPin } from "lucide-react";
 
 interface TournamentFixturesProps {
   tournamentId: string;
@@ -19,6 +34,30 @@ interface TournamentFixturesProps {
 export function TournamentFixtures({ tournamentId, matches, onUpdate, isOwner }: TournamentFixturesProps) {
   const [loading, setLoading] = useState<string | null>(null);
   const [scores, setScores] = useState<Record<string, { home: string; away: string }>>({});
+  
+  // Generate fixtures state
+  const [generateOpen, setGenerateOpen] = useState(false);
+  const [venues, setVenues] = useState<Venue[]>([]);
+  const [selectedVenueId, setSelectedVenueId] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [daysPerRound, setDaysPerRound] = useState("7");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (generateOpen && venues.length === 0) {
+      loadVenues();
+    }
+  }, [generateOpen]);
+
+  const loadVenues = async () => {
+    try {
+      const response = await venuesApi.getAll();
+      setVenues(response.data.venues);
+    } catch (err) {
+      console.error("Failed to load venues:", err);
+      setError("Failed to load venues");
+    }
+  };
 
   const handleScoreChange = (matchId: string, type: "home" | "away", value: string) => {
     setScores(prev => ({
@@ -51,12 +90,25 @@ export function TournamentFixtures({ tournamentId, matches, onUpdate, isOwner }:
   };
 
   const handleGenerateFixtures = async () => {
+    if (!selectedVenueId || !startDate) {
+      setError("Please select a venue and start date");
+      return;
+    }
+
     setLoading("generate");
+    setError("");
+    
     try {
-      await tournamentsApi.generateFixtures(tournamentId, { type: "round_robin" });
+      await tournamentsApi.generateFixtures(tournamentId, { 
+        venueId: selectedVenueId,
+        startDate: new Date(startDate).toISOString(), 
+        daysPerRound: parseInt(daysPerRound) || 7
+      });
+      setGenerateOpen(false);
       onUpdate();
     } catch (error) {
       console.error("Failed to generate fixtures:", error);
+      setError("Failed to generate fixtures. Check if you have enough teams.");
     } finally {
       setLoading(null);
     }
@@ -74,21 +126,79 @@ export function TournamentFixtures({ tournamentId, matches, onUpdate, isOwner }:
         <p className="text-gray-600 mb-6">
           Generate fixtures to start the tournament.
         </p>
+        
         {isOwner && (
-          <Button 
-            onClick={handleGenerateFixtures} 
-            disabled={!!loading}
-            className="bg-yellow-500 hover:bg-yellow-600 text-white"
-          >
-            {loading === "generate" ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              "Generate Fixtures"
-            )}
-          </Button>
+          <Dialog open={generateOpen} onOpenChange={setGenerateOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-yellow-500 hover:bg-yellow-600 text-white">
+                Generate Fixtures
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Generate Tournament Fixtures</DialogTitle>
+              </DialogHeader>
+              
+              <div className="space-y-4 pt-4">
+                {error && (
+                  <div className="bg-red-50 text-red-700 p-3 rounded-md text-sm border border-red-200">
+                    {error}
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <Label>Venue</Label>
+                  <Select value={selectedVenueId} onValueChange={setSelectedVenueId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a venue" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {venues.map((venue) => (
+                        <SelectItem key={venue.id} value={venue.id}>
+                          {venue.name} ({venue.city})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Start Date</Label>
+                  <Input 
+                    type="date" 
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Days Between Rounds</Label>
+                  <Input 
+                    type="number" 
+                    min="1"
+                    value={daysPerRound}
+                    onChange={(e) => setDaysPerRound(e.target.value)}
+                    placeholder="e.g. 7 for weekly"
+                  />
+                </div>
+
+                <Button 
+                  onClick={handleGenerateFixtures} 
+                  disabled={!!loading}
+                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-white mt-4"
+                >
+                  {loading === "generate" ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    "Generate Fixtures"
+                  )}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         )}
       </div>
     );
@@ -110,6 +220,10 @@ export function TournamentFixtures({ tournamentId, matches, onUpdate, isOwner }:
               <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="text-sm text-gray-500 w-full md:w-auto text-center md:text-left">
                   {format(new Date(match.date), "MMM d, h:mm a")}
+                  <div className="flex items-center gap-1 text-xs text-gray-400 mt-1">
+                    <MapPin className="h-3 w-3" />
+                    {match.venue?.name}
+                  </div>
                 </div>
 
                 <div className="flex-1 flex items-center justify-center gap-4 w-full">

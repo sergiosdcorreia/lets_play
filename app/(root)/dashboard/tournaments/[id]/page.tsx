@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { tournamentsApi, teamsApi } from "@/lib/api";
+import { useAuthStore } from "@/store/authStore";
 import { useHydration } from "@/hooks/useHydration";
 import { TournamentStandings } from "@/components/tournaments/TournamentStandings";
 import { TournamentFixtures } from "@/components/tournaments/TournamentFixtures";
@@ -100,7 +101,8 @@ export default function TournamentDetailsPage() {
     );
   }
 
-  const isOwner = true; // TODO: Check ownership properly
+  const { user } = useAuthStore();
+  const isOwner = user?.id === tournament?.createdById;
 
   return (
     <div className="space-y-6">
